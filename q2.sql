@@ -1,19 +1,16 @@
 DELIMITER //
-CREATE PROCEDURE ListAllSubscribers()
-BEGIN
-    DECLARE done INT DEFAULT FALSE;
-    DECLARE sub_name VARCHAR(100);
-    DECLARE cur CURSOR FOR SELECT SubscriberName FROM Subscribers;
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-    OPEN cur;
-    read_loop: LOOP
-        FETCH cur INTO sub_name;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-        SELECT sub_name AS Subscriber;
-    END LOOP;
 
-    CLOSE cur;
+CREATE PROCEDURE GetWatchHistoryBySubscriber(IN sub_id INT)
+BEGIN
+    SELECT
+        S.Title,
+        WH.WatchTime
+    FROM
+        WatchHistory AS WH
+    JOIN
+        Shows AS S ON WH.ShowID = S.ShowID
+    WHERE
+        WH.SubscriberID = sub_id;
 END //
+
 DELIMITER ;
